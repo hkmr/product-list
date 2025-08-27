@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import ThemeProvider from "@/context/ThemeContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,9 +27,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-white`}
       >
-        {children}
+        <ThemeProvider>
+          <Navbar />
+          <main>{children}</main>
+          <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
+            jaspercolin.com
+          </footer>
+        </ThemeProvider>
       </body>
     </html>
   );
