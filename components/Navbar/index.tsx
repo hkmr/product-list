@@ -19,19 +19,17 @@ import {
 import { useTheme } from "@/hooks/use-theme";
 
 const navItems = [
-  { id: "home", label: "Home", icon: Home, href: "#home" },
-  { id: "products", label: "Products", icon: Package, href: "/product-list" },
+  { id: "home", label: "Home", icon: Home, href: "/" },
+  { id: "products", label: "Products", icon: Package, href: "/products" },
   { id: "about", label: "About", icon: Info, href: "#about" },
   { id: "contact", label: "Contact", icon: Phone, href: "#contact" },
 ];
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState("home");
   const [cartCount, setCartCount] = useState(3);
+  const [selectedMenu, setSelectedMenu] = useState("home");
   const { mounted, theme, toggleTheme } = useTheme();
-
-  console.log(mounted, theme);
 
   return (
     <>
@@ -56,29 +54,30 @@ const Navbar = () => {
             <nav className="hidden lg:flex items-center gap-1">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                const isActive = activeItem === item.id;
+                const isActive = selectedMenu === item.id;
 
                 return (
-                  <Link
-                    key={item.id}
-                    href={item.href}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 group relative ${
-                      isActive
-                        ? "text-blue-600 dark:text-blue-400"
-                        : "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
-                    }`}
-                  >
-                    <Icon className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
-                    <span className="font-medium">{item.label}</span>
-
-                    <div
-                      className={`absolute inset-0 bg-blue-50 dark:bg-blue-900/20 rounded-lg transition-opacity duration-200 -z-10 ${
+                  <div onClick={() => setSelectedMenu(item.id)} key={item.id}>
+                    <Link
+                      href={item.href}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 group relative ${
                         isActive
-                          ? "opacity-100"
-                          : "opacity-0 group-hover:opacity-100"
+                          ? "text-blue-600 dark:text-blue-400"
+                          : "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
                       }`}
-                    ></div>
-                  </Link>
+                    >
+                      <Icon className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
+                      <span className="font-medium">{item.label}</span>
+
+                      <div
+                        className={`absolute inset-0 bg-blue-50 dark:bg-blue-900/20 rounded-lg transition-opacity duration-200 -z-10 ${
+                          isActive
+                            ? "opacity-100"
+                            : "opacity-0 group-hover:opacity-100"
+                        }`}
+                      ></div>
+                    </Link>
+                  </div>
                 );
               })}
             </nav>
@@ -133,7 +132,7 @@ const Navbar = () => {
       <MobileMenu
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
-        activeItem={activeItem}
+        selectedMenu={selectedMenu}
       />
     </>
   );
@@ -142,14 +141,12 @@ const Navbar = () => {
 const MobileMenu = ({
   isOpen,
   onClose,
-  activeItem,
+  selectedMenu,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  activeItem: string;
+  selectedMenu: string;
 }) => {
-  const { theme } = useTheme();
-
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -199,7 +196,7 @@ const MobileMenu = ({
         <nav className="p-6 space-y-2">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = activeItem === item.id;
+            const isActive = selectedMenu === item.id;
 
             return (
               <Link
